@@ -1,0 +1,10 @@
+{
+  "app": "python3 app.py",
+  "context": {
+    "@aws-cdk/core:enableStackNameDuplicates": "true",
+    "aws-cdk:enableDiffNoFail": "true",
+    "project_name": "pryan-cdk-project",
+    "env": "pryandev",
+    "dynamodb-arn": "arn:aws:dynamodb:us-east-1:485071734737:table/pryan-test-db"
+  }
+}
