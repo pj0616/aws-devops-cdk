@@ -1,11 +1,21 @@
 from aws_cdk import (
     aws_lambda as lb,
     aws_apigateway as apigw,
+    # aws_lambda_event_sources as lambda_events,
+    aws_s3 as s3,
     core,
 )
 
 
 class LambdaStack(core.Stack):
+
+    # def create_s3_trigger(self, source_bucket: s3.Bucket, lambda_ref: lb.Function, events: list, prefix: str=None,
+    #                       suffix: str=None) -> lambda_events.S3EventSource:
+    #     events = [_s3.EventType.OBJECT_CREATED]
+    #     filters = [s3.NotificationKeyFilter(prefix=prefix, suffix=suffix)]
+    #     s3_trigger = lambda_events.S3EventSource(bucket=source_bucket, events=events, filters=filters)
+    #     s3_trigger.bind(resource)
+    #     return trigger
 
     def __init__(self, scope: core.Construct, id: str,vpc, lambdasg, lambdarole, **kwargs) -> None:
         super().__init__(scope, id, **kwargs)

@@ -41,7 +41,7 @@ setuptools.setup(
         "aws-cdk.aws-elasticache",
         "aws-cdk.aws-codepipeline",
         "aws-cdk.aws-codepipeline-actions",
-
+        "aws-cdk.aws_lambda_event_sources",
         # Lambda Related imports
         "boto3",
         "botocore",
