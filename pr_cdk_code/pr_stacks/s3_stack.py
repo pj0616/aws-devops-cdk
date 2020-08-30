@@ -16,7 +16,7 @@ class S3Stack(core.Stack):
         # be globally unique.  We dont NEED to use account id
         account_id = core.Aws.ACCOUNT_ID
 
-        lambda_bucket = s3.Bucket(self, id='pryan-lambda-bucket',
+        self.lambda_bucket = s3.Bucket(self, id='pryan-lambda-bucket',
                                   access_control=s3.BucketAccessControl.BUCKET_OWNER_FULL_CONTROL,
                                   encryption=s3.BucketEncryption.S3_MANAGED,
                                   bucket_name=f'pryan-{account_id}-lambda-deploy-packages',
@@ -29,9 +29,14 @@ class S3Stack(core.Stack):
                                   removal_policy=core.RemovalPolicy.DESTROY # RETAIN
                                   )
 
+        core.CfnOutput(self,id='lambda_bucket_id',
+            value=self.lambda_bucket.bucket_name,
+            export_name='lambda-bucket'
+        )
+
         ssm.StringParameter(self, id="pryan-ssm-lambda-bucket",
                             parameter_name=f'/{env_name}/lambda-s3-bucket',
-                            string_value=lambda_bucket.bucket_name
+                            string_value=self.lambda_bucket.bucket_name
                             )
 
 
@@ -45,7 +50,8 @@ class S3Stack(core.Stack):
                 block_public_policy=True,
                 ignore_public_acls=True,
                 restrict_public_buckets=True
-            )
+            ),
+            removal_policy=core.RemovalPolicy.DESTROY
 
         )
 
@@ -59,12 +65,13 @@ class S3Stack(core.Stack):
         self.cloudtrail_bucket=s3.Bucket(self, "cloudtrail",
             access_control=s3.BucketAccessControl.BUCKET_OWNER_FULL_CONTROL,
             encryption=s3.BucketEncryption.S3_MANAGED,
-            bucket_name=account_id+'-'+env_name+'-cloudtrail',
+            bucket_name='pryan-' + account_id+'-'+env_name+'-cloudtrail',
             block_public_access=s3.BlockPublicAccess(
                 block_public_acls=True,
                 block_public_policy=True,
                 ignore_public_acls=True,
                 restrict_public_buckets=True
-            )
+            ),
+            removal_policy=core.RemovalPolicy.DESTROY
 
         )

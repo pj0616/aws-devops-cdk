@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 from aws_cdk import core
+from aws_cdk import aws_s3 as s3
 from pr_stacks.vpc_stack import VPCStack
 from pr_stacks.securitygroup_stack import SecurityGroupStack
 from pr_stacks.bastion_stack import BastionStack
@@ -31,6 +32,8 @@ apigw_stack = APIStack(app, id='apigw-stack')
 # cdk detected that I was referencing python 3.8 docker and downloaded
 #  Pulling from amazon/aws-sam-cli-build-image-python3.8
 lambda_stack = LambdaStack(app, id='lambda-stack', vpc=vpc_stack.vpc, lambdasg=security_stack.lambda_sg, lambdarole=security_stack.lambda_basic_role)
+lambda_stack.create_s3_trigger(source_bucket_name='pryan-cdk-rds-event-bucket', lambda_ref=lambda_stack.my_rds_lambda, events=[s3.EventType.OBJECT_CREATED], prefix='test_rds_', suffix='.csv')
+
 
 cdn_stack = CDNStack(app, id='cdn-stack', s3Bucket=core.Fn.import_value('frontend-bucket'))
 cp_frontend_stack = CodePipelineFrontendStack(app, id='cp-fe-stack', webhostingbucket=core.Fn.import_value('frontend-bucket'))

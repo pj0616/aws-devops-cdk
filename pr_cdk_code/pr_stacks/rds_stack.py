@@ -30,8 +30,9 @@ class RDSStack(core.Stack):
                              )
                              )
 
+        db_name = f'pryancdkdb'
         db_mysql = rds.DatabaseCluster(self, id='pryan-mysql',
-                                       default_database_name=f'pryancdkdb',
+                                       default_database_name=db_name,
                                        engine=rds.DatabaseClusterEngine.aurora_mysql(
                                            version=rds.AuroraMysqlEngineVersion.VER_5_7_12
                                        ),
@@ -59,6 +60,10 @@ class RDSStack(core.Stack):
                             string_value=db_mysql.cluster_endpoint.hostname
                             )
 
+        ssm.StringParameter(self, id='pryan-db-name',
+                            parameter_name=f"/{env_name}/db-name",
+                            string_value=db_name
+                            )
 
         # ssm.StringParameter(self, 'db-endpoint',
         #     parameter_name='/'+env_name+'/db-endpoint',
