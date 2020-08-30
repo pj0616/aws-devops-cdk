@@ -11,6 +11,8 @@ from pr_stacks.redis_stack import RedisStack
 from pr_stacks.cognito_stack import CognitoStack
 from pr_stacks.apigw_stack import APIStack
 from pr_stacks.lambda_stack import LambdaStack
+from pr_stacks.cdn_stack import CDNStack
+from pr_stacks.codepipeline_frontend import CodePipelineFrontendStack
 
 app = core.App()
 # PrCdkCodeStack(app, "pr-cdk-code")
@@ -28,7 +30,12 @@ apigw_stack = APIStack(app, id='apigw-stack')
 # cdk bootstrap --profile spr
 # cdk detected that I was referencing python 3.8 docker and downloaded
 #  Pulling from amazon/aws-sam-cli-build-image-python3.8
-lambda_stack = LambdaStack(app, id='lambda-stack')
+lambda_stack = LambdaStack(app, id='lambda-stack', vpc=vpc_stack.vpc, lambdasg=security_stack.lambda_sg, lambdarole=security_stack.lambda_basic_role)
+
+cdn_stack = CDNStack(app, id='cdn-stack', s3Bucket=core.Fn.import_value('frontend-bucket'))
+cp_frontend_stack = CodePipelineFrontendStack(app, id='cp-fe-stack', webhostingbucket=core.Fn.import_value('frontend-bucket'))
+
+
 
 # synth will synthesis the cloudformation template
 app.synth()

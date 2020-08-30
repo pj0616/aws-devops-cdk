@@ -67,7 +67,7 @@ class SecurityGroupStack(core.Stack):
         # resources = for all S3 objects and all RDS databases
         # Normally I think we would want to tighten that up
         self.lambda_basic_role.add_to_policy(
-            statement=iam.PolicyStatement(actions=['s3:*', 'rds:*'],
+            statement=iam.PolicyStatement(actions=['s3:*', 'rds:*', 'ssm:*', 'secretsmanager:*', 'ec2:*'],
                                           resources=['*'])
         )
 

@@ -39,7 +39,13 @@ setuptools.setup(
         "aws-cdk.aws-cloudtrail",
         "aws-cdk.aws-rds",
         "aws-cdk.aws-elasticache",
-        "aws-cdk.aws-lambda-nodejs"
+        "aws-cdk.aws-codepipeline",
+        "aws-cdk.aws-codepipeline-actions",
+
+        # Lambda Related imports
+        "boto3",
+        "botocore",
+        "pymysql"
     ],
 
     python_requires=">=3.6",

@@ -55,6 +55,8 @@ class RDSStack(core.Stack):
             string_value=db_mysql.cluster_endpoint.hostname
         )
 
+
+
         ssm.StringParameter(self,'db-name',
             parameter_name='/'+env_name+'/db-name',
             string_value=prj_name+env_name

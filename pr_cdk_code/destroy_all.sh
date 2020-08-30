@@ -1,3 +1,9 @@
+echo 'codepipeline frontend'
+cdk destroy cp-fe-stack --profile spr --force
+
+echo 'cdn-stack'
+cdk destroy cdn-stack --profile spr --force
+
 echo 'lambda-stack'
 cdk destroy lambda-stack --profile spr --force
 

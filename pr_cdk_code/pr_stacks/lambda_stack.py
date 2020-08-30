@@ -7,13 +7,16 @@ from aws_cdk import (
 
 class LambdaStack(core.Stack):
 
-    def __init__(self, scope: core.Construct, id: str, **kwargs) -> None:
+    def __init__(self, scope: core.Construct, id: str,vpc, lambdasg, lambdarole, **kwargs) -> None:
         super().__init__(scope, id, **kwargs)
 
         lambda_function = lb.Function(self, 'helloworldfunction',
                                       runtime=lb.Runtime.PYTHON_3_8,
                                       code=lb.Code.asset('pr_hello_lambda'),
-                                      handler='hello.handler'
+                                      handler='hello.handler',
+                                      security_group=lambdasg,
+                                      vpc=vpc,
+                                      role=lambdarole
                                       )
 
         # https://stackoverflow.com/questions/63585965/cdk-python-lambda-gets-bundled-every-time-i-run-a-cdk-command
@@ -21,7 +24,9 @@ class LambdaStack(core.Stack):
         my_ip_lambda = lb.Function(self, "MyLambda",
                                        runtime=lb.Runtime.PYTHON_3_8,
                                        handler="hello_ip.handler",
-                                       code=lb.Code.from_asset(
+                                        security_group=lambdasg,
+                                        vpc=vpc,
+                                        code=lb.Code.from_asset(
                                            'pr_ip_lambda',
                                            bundling=core.BundlingOptions(
                                                image=lb.Runtime.PYTHON_3_8.bundling_docker_image,
@@ -30,8 +35,27 @@ class LambdaStack(core.Stack):
                                                    'pip install -r requirements.txt -t /asset-output && cp -au . /asset-output'
                                                ],
                                            )
-                                       )
+                                       ),
+                                   role=lambdarole
                             )
+
+        my_rds_lambda = lb.Function(self, "MyRDSLambda",
+                                       runtime=lb.Runtime.PYTHON_3_8,
+                                       handler="rds_lambda.handler",
+                                    security_group=lambdasg,
+                                    vpc=vpc,
+                                    code=lb.Code.from_asset(
+                                           'pr_rds_lambda',
+                                           bundling=core.BundlingOptions(
+                                               image=lb.Runtime.PYTHON_3_8.bundling_docker_image,
+                                               command=[
+                                                   'bash', '-c',
+                                                   'pip install -r requirements.txt -t /asset-output && cp -au . /asset-output'
+                                               ],
+                                           )
+                                       ),
+                                    role=lambdarole
+                                    )
 
         api_gateway2 = apigw.LambdaRestApi(self, 'iplambda',
                                           handler=my_ip_lambda,
