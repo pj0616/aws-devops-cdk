@@ -6,6 +6,7 @@ import pymysql as db
 import logging
 import csv
 from io import StringIO
+import os
 
 
 logger = logging.getLogger()
@@ -197,18 +198,21 @@ def get_s3_file_contents(bucket, path):
 
 def handler(event, context):
     print(f"**** {event}")
+    env_name = os.getenv('ENV_NAME')
+    print(f"*** ENV_NAME: {env_name}")
 
-    resp = get_secret(secret_name='pryandev-rds-secret')
+
+    resp = get_secret(secret_name=f'{env_name}-rds-secret')
 
     print(resp)
     rds_password = json.loads(resp['SecretString'])['rds-password']
     rds_username = json.loads(resp['SecretString'])['username']
 
-    param_value = get_param_value('/pryandev/db-host')
+    param_value = get_param_value(f'/{env_name}/db-host')
     db_host = param_value['Parameter']['Value']
 
     # for now hard code some stuff
-    param_value = get_param_value('/pryandev/db-name')
+    param_value = get_param_value(f'/{env_name}/db-name')
     db_name = param_value['Parameter']['Value']
 
     results = run_query("SELECT * FROM pr_test_tbl", db_user=rds_username, db_password=rds_password, db_host=db_host, db_name=db_name)

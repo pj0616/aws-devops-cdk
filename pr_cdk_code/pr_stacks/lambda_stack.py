@@ -59,6 +59,8 @@ class LambdaStack(core.Stack):
     def __init__(self, scope: core.Construct, id: str,vpc, lambdasg, lambdarole, **kwargs) -> None:
         super().__init__(scope, id, **kwargs)
 
+        env_name = self.node.try_get_context('env')
+
         lambda_function = lb.Function(self, 'helloworldfunction',
                                       runtime=lb.Runtime.PYTHON_3_8,
                                       code=lb.Code.asset('pr_hello_lambda'),
@@ -68,6 +70,11 @@ class LambdaStack(core.Stack):
                                       role=lambdarole
                                       )
 
+        requests_layer = lb.LayerVersion(
+            self, "requests",
+            code=lb.AssetCode('./pr_layers/requests_layer.zip')
+        )
+
         # https://stackoverflow.com/questions/63585965/cdk-python-lambda-gets-bundled-every-time-i-run-a-cdk-command
         # https://docs.aws.amazon.com/cdk/api/latest/python/aws_cdk.aws_s3_assets.README.html
         my_ip_lambda = lb.Function(self, "MyLambda",
@@ -75,16 +82,8 @@ class LambdaStack(core.Stack):
                                        handler="hello_ip.handler",
                                         security_group=lambdasg,
                                         vpc=vpc,
-                                        code=lb.Code.from_asset(
-                                           'pr_ip_lambda',
-                                           bundling=core.BundlingOptions(
-                                               image=lb.Runtime.PYTHON_3_8.bundling_docker_image,
-                                               command=[
-                                                   'bash', '-c',
-                                                   'pip install -r requirements.txt -t /asset-output && cp -au . /asset-output'
-                                               ],
-                                           )
-                                       ),
+                                        layers=[requests_layer],
+                                        code=lb.AssetCode("pr_ip_lambda"),
                                    role=lambdarole
                             )
 
@@ -104,7 +103,11 @@ class LambdaStack(core.Stack):
                                            )
                                        ),
                                     role=lambdarole,
-                                         timeout=core.Duration.minutes(3)
+                                    timeout=core.Duration.minutes(3),
+                                    environment= {
+                                        "ENV_NAME": env_name
+                                    }
+
                                     )
 
         api_gateway2 = apigw.LambdaRestApi(self, 'iplambda',

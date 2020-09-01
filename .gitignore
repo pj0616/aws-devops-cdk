@@ -270,3 +270,4 @@ Temporary Items
 pyvenv.cfg
 pip-selfcheck.json
 
+/layers_temp/**
