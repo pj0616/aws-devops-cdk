@@ -49,6 +49,11 @@ https://aws.amazon.com/getting-started/hands-on/building-serverless-applications
 
 https://github.com/aws-samples/aws-cdk-examples
 
+#### Layers Example
+
+https://github.com/aws-samples/aws-cdk-examples/blob/master/python/lambda-ddb-mysql-etl-pipeline/etl_pipeline_cdk/etl_pipeline_cdk_stack.py
+https://blog.skbali.com/2018/11/aws-lambda-layer-example-in-python/
+
 ## Layers
 
 ```text
@@ -61,3 +66,8 @@ cd ..
 zip -r9 ../pr_cdk_code/py_layers/requests_layer.zip .
 
 ```
+
+## SFTP AWS Transfer
+
+`sftp -i ~/.ssh/aws_transfer_key cdkuser@s-a4960f7e50534ac9b.server.transfer.us-east-1.amazonaws.com`
+
