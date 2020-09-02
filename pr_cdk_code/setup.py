@@ -42,6 +42,8 @@ setuptools.setup(
         "aws-cdk.aws-codepipeline",
         "aws-cdk.aws-codepipeline-actions",
         "aws-cdk.aws_lambda_event_sources",
+        "aws-cdk.aws_dynamodb",
+
         # Lambda Related imports
         "boto3",
         "botocore",

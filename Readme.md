@@ -55,15 +55,17 @@ https://github.com/aws-samples/aws-cdk-examples/blob/master/python/lambda-ddb-my
 https://blog.skbali.com/2018/11/aws-lambda-layer-example-in-python/
 
 ## Layers
+NOTE: the directory MUST be called `python`.
 
 ```text
-mkdir layers_temp
-cd layers_temp
-mkdir requests_layer
-cd requests_layer
+cd $HOME 
+mkdir -p temp/python 
+cd temp/python
+docker run --rm -it -v "$PWD":/var/task lambci/lambda:build-python3.8 bash 
+pip install pymysql -t .
 pip install requests -t .
 cd ..
-zip -r9 ../pr_cdk_code/py_layers/requests_layer.zip .
+zip -r9 <zipfilename>.zip python
 
 ```
 

@@ -61,6 +61,14 @@ class LambdaStack(core.Stack):
 
         env_name = self.node.try_get_context('env')
 
+
+        requests_layer = lb.LayerVersion(
+            self, id="requests-layer",
+            code=lb.AssetCode('./pr_layers/requests_layer.zip'),
+            compatible_runtimes=[lb.Runtime.PYTHON_3_6, lb.Runtime.PYTHON_3_7, lb.Runtime.PYTHON_3_8]
+
+        )
+
         lambda_function = lb.Function(self, 'helloworldfunction',
                                       runtime=lb.Runtime.PYTHON_3_8,
                                       code=lb.Code.asset('pr_hello_lambda'),
@@ -70,14 +78,10 @@ class LambdaStack(core.Stack):
                                       role=lambdarole
                                       )
 
-        requests_layer = lb.LayerVersion(
-            self, "requests",
-            code=lb.AssetCode('./pr_layers/requests_layer.zip')
-        )
 
         # https://stackoverflow.com/questions/63585965/cdk-python-lambda-gets-bundled-every-time-i-run-a-cdk-command
         # https://docs.aws.amazon.com/cdk/api/latest/python/aws_cdk.aws_s3_assets.README.html
-        my_ip_lambda = lb.Function(self, "MyLambda",
+        my_ip_lambda = lb.Function(self, "ip-lambda",
                                        runtime=lb.Runtime.PYTHON_3_8,
                                        handler="hello_ip.handler",
                                         security_group=lambdasg,
