@@ -55,7 +55,8 @@ https://github.com/aws-samples/aws-cdk-examples/blob/master/python/lambda-ddb-my
 https://blog.skbali.com/2018/11/aws-lambda-layer-example-in-python/
 
 ## Layers
-NOTE: the directory MUST be called `python`.
+NOTE: the directory MUST be called `python`.  The zipfile can be named anything, but the zipfile name is what you reference in CDK
+
 
 ```text
 cd $HOME 
