@@ -14,7 +14,7 @@ class CognitoStack(core.Stack):
         prj_name = self.node.try_get_context('project_name')
         env_name = self.node.try_get_context('env')
 
-        user_pool2 = cognito.UserPool(self, id='pryan-precog',
+        user_pool2 = cognito.UserPool(self, id=f'{env_name}-precog',
                                       auto_verify=cognito.AutoVerifiedAttrs(
                                               email=True
                                           ),
@@ -23,7 +23,7 @@ class CognitoStack(core.Stack):
                                           phone=True
                                       ),
                                       self_sign_up_enabled=True,
-                                      user_pool_name='pryan-cdk-2-user-pool',
+                                      user_pool_name=f'{env_name}-cdk-2-user-pool',
                                       custom_attributes={
                                           "param1":cognito.StringAttribute(mutable=True)
                                       },
@@ -37,14 +37,14 @@ class CognitoStack(core.Stack):
                                       )
 
 
-        user_pool = cognito.CfnUserPool(self, id='pryan-cognito-user-pool',
+        user_pool = cognito.CfnUserPool(self, id=f'{env_name}-cognito-user-pool',
                                         auto_verified_attributes=[
                                             'email'
                                         ],
                                         username_attributes=[
                                             'email', 'phone_number'
                                         ],
-                                        user_pool_name='pryan-cdk-user-pool',
+                                        user_pool_name=f'{env_name}-cdk-user-pool',
                                         schema=[
                                             {
                                                 "attributeDataType": "String",
@@ -63,11 +63,11 @@ class CognitoStack(core.Stack):
                                         )
                                         )
 
-        user_pool_client2 = cognito.UserPoolClient(self, id='pryan-pool-client2',
+        user_pool_client2 = cognito.UserPoolClient(self, id=f'{env_name}-pool-client2',
                                                    user_pool=user_pool2,
-                                                   user_pool_client_name='pryan-cdk-app-client2'
+                                                   user_pool_client_name=f'{env_name}-cdk-app-client2'
                                                    )
-        identity_pool2 = cognito.CfnIdentityPool(self, id='pryan-identify-pool-2',
+        identity_pool2 = cognito.CfnIdentityPool(self, id=f'{env_name}-identify-pool-2',
                                                 allow_unauthenticated_identities=False,
                                                 cognito_identity_providers=[
                                                     cognito.CfnIdentityPool.CognitoIdentityProviderProperty(
@@ -75,15 +75,15 @@ class CognitoStack(core.Stack):
                                                         provider_name=user_pool.attr_provider_name
                                                     )
                                                 ],
-                                                identity_pool_name='pryan-cdk-identity-pool2'
+                                                identity_pool_name=f'{env_name}-cdk-identity-pool2'
                                                 )
 
-        user_pool_client = cognito.CfnUserPoolClient(self, id='pryan-pool-client',
+        user_pool_client = cognito.CfnUserPoolClient(self, id=f'{env_name}-pool-client',
                                                      user_pool_id=user_pool.ref,
-                                                     client_name='pryan-cdk-app-client'
+                                                     client_name=f'{env_name}-cdk-app-client'
                                                      )
 
-        identity_pool = cognito.CfnIdentityPool(self, id='pryan-identify-pool',
+        identity_pool = cognito.CfnIdentityPool(self, id=f'{env_name}-identify-pool',
                                                 allow_unauthenticated_identities=False,
                                                 cognito_identity_providers=[
                                                     cognito.CfnIdentityPool.CognitoIdentityProviderProperty(
@@ -91,7 +91,7 @@ class CognitoStack(core.Stack):
                                                         provider_name=user_pool.attr_provider_name
                                                     )
                                                 ],
-                                                identity_pool_name='pryan-cdk-identity-pool'
+                                                identity_pool_name=f'{env_name}-cdk-identity-pool'
                                                 )
 
 

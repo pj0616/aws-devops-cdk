@@ -12,7 +12,7 @@ class IAMStack(core.Stack):
         self.lambda_basic_role = iam.Role(self,
                                 'lambdabasicrole',
                                 assumed_by=iam.ServicePrincipal(service='lambda.amazonaws.com'),
-                                role_name='pryan-cdk-lambda-role',
+                                role_name=f'{env_name}-cdk-lambda-role',
                                 managed_policies=[
                                     iam.ManagedPolicy.from_aws_managed_policy_name('service-role/AWSLambdaBasicExecutionRole')
                                     ]
@@ -28,11 +28,11 @@ class IAMStack(core.Stack):
         )
 
 
-        ssm.StringParameter(self, 'pryan-lambdarole-arn-param',
+        ssm.StringParameter(self, f'{env_name}-lambdarole-arn-param',
                             parameter_name=f"/{env_name}/lambda-role-arn",
                             string_value=self.lambda_basic_role.role_arn
                             )
-        ssm.StringParameter(self, 'pryan-lambdarole-name-param',
+        ssm.StringParameter(self, f'{env_name}-lambdarole-name-param',
                             parameter_name=f"/{env_name}/lambda-role-name",
                             string_value=self.lambda_basic_role.role_name
                             )

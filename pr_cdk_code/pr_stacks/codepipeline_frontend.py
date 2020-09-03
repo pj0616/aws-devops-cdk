@@ -35,7 +35,7 @@ class CodePipelineFrontendStack(core.Stack):
 
         build_project = cb.PipelineProject(self, id='buildfrontend',
                                            project_name='BuildFrontend',
-                                           description='Pryan FrontEndProject project for SPA',
+                                           description=f'{env_name} FrontEndProject project for SPA',
                                            environment=cb.BuildEnvironment(
                                                build_image=cb.LinuxBuildImage.STANDARD_3_0,
                                                environment_variables={

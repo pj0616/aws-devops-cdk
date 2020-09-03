@@ -31,7 +31,7 @@ class RDSStack(core.Stack):
                              )
 
         db_name = f'pryancdkdb'
-        db_mysql = rds.DatabaseCluster(self, id='pryan-mysql',
+        db_mysql = rds.DatabaseCluster(self, id=f'{env_name}-mysql',
                                        default_database_name=db_name,
                                        engine=rds.DatabaseClusterEngine.aurora_mysql(
                                            version=rds.AuroraMysqlEngineVersion.VER_5_7_12
@@ -55,12 +55,12 @@ class RDSStack(core.Stack):
         db_mysql.connections.allow_default_port_from(bastionsg, "Access from bastion host")
 
         # ssm
-        ssm.StringParameter(self, id='pryan-db-host',
+        ssm.StringParameter(self, id=f'{env_name}-db-host',
                             parameter_name=f"/{env_name}/db-host",
                             string_value=db_mysql.cluster_endpoint.hostname
                             )
 
-        ssm.StringParameter(self, id='pryan-db-name',
+        ssm.StringParameter(self, id=f'{env_name}-db-name',
                             parameter_name=f"/{env_name}/db-name",
                             string_value=db_name
                             )

@@ -6,6 +6,8 @@ from aws_cdk import (
     core,
 )
 
+# Infrastructure is Code with the AWS CDK - AWS Online Tech Talks
+# https://www.youtube.com/watch?v=ZWCvNFUN-sU
 
 class AWS101A(core.Stack):
 
@@ -25,14 +27,16 @@ class AWS101A(core.Stack):
         )
 
         # IAM Roles
-        self.lambda_basic_role = iam.Role(self,
-                                id=f'{env_name}-lambdabasicrole-dynamo',
-                                assumed_by=iam.ServicePrincipal(service='lambda.amazonaws.com'),
-                                role_name=f'{env_name}-cdk-dynamo-lambda-role',
-                                managed_policies=[
-                                    iam.ManagedPolicy.from_aws_managed_policy_name('service-role/AWSLambdaBasicExecutionRole')
-                                    ]
-                                )
+        # By default when you create a Lambda function, it will get the LambdaBasicExecution Role
+        # so we do not have to do this explicitly.
+        # self.lambda_basic_role = iam.Role(self,
+        #                         id=f'{env_name}-lambdabasicrole-dynamo',
+        #                         assumed_by=iam.ServicePrincipal(service='lambda.amazonaws.com'),
+        #                         role_name=f'{env_name}-cdk-dynamo-lambda-role',
+        #                         managed_policies=[
+        #                             iam.ManagedPolicy.from_aws_managed_policy_name('service-role/AWSLambdaBasicExecutionRole')
+        #                             ]
+        #                         )
 
         # inline policies
         # give lambda full access to S3 and RDS
@@ -59,14 +63,15 @@ class AWS101A(core.Stack):
                                          handler="dynamodb_lambda.handler",
                                          code=lb.AssetCode("pr_dynamo_lambda"),
                                          layers=[requests_layer],
-                                         role=self.lambda_basic_role,
+                                         # role=self.lambda_basic_role,
                                          timeout=core.Duration.minutes(3)
                             )
 
         my_dynamodb_lambda.add_environment("DDB_TABLE_NAME", ddb_table.table_name)
 
         # create inline policy to allow lambda write permission to this table
-        ddb_table.grant_write_data(my_dynamodb_lambda)
+        # ddb_table.grant_write_data(my_dynamodb_lambda)
+        ddb_table.grant_read_write_data(my_dynamodb_lambda)
 
         api_gateway2 = apigw.LambdaRestApi(self, id=f'{env_name}-api-dynamo-lambda',
                                           handler=my_dynamodb_lambda,

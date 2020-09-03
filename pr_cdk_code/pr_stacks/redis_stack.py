@@ -15,16 +15,16 @@ class RedisStack(core.Stack):
 
         subnets = [ subnet.subnet_id for subnet in vpc.private_subnets]
 
-        subnet_group = redis.CfnSubnetGroup(self, id='pryan-redis-subnet-group',
+        subnet_group = redis.CfnSubnetGroup(self, id=f'{env_name}-redis-subnet-group',
                                             subnet_ids=subnets,
                                             description='subnet group for redis'
                                             )
 
-        redis_cluster = redis.CfnCacheCluster(self, id='pryan-redis',
+        redis_cluster = redis.CfnCacheCluster(self, id=f'{env_name}-redis',
                                               cache_node_type='cache.t2.small',
                                               engine='redis',
                                               num_cache_nodes=1,
-                                              cluster_name='pryan-cdk-redis',
+                                              cluster_name=f'{env_name}-cdk-redis',
                                               cache_subnet_group_name=subnet_group.ref,
                                               vpc_security_group_ids=[redissq.security_group_id],
                                               auto_minor_version_upgrade=True
@@ -32,12 +32,12 @@ class RedisStack(core.Stack):
         # the redis cluster must wait for the subnet_group
         redis_cluster.add_depends_on(subnet_group)
 
-        ssm.StringParameter(self, id='pryan-redis-endpoint',
+        ssm.StringParameter(self, id=f'{env_name}-redis-endpoint',
             parameter_name='/'+env_name+'/redis-endpoint',
             string_value=redis_cluster.attr_redis_endpoint_address
         )
 
-        ssm.StringParameter(self, id='pryan-redis-port',
+        ssm.StringParameter(self, id=f'{env_name}-redis-port',
             parameter_name='/'+env_name+'/redis-port',
             string_value=redis_cluster.attr_redis_endpoint_port
         )

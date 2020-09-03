@@ -13,7 +13,7 @@ class VPCStack(core.Stack):
         env_name = self.node.try_get_context('env')
         print(prj_name, env_name)
 
-        self.vpc = ec2.Vpc(self, 'pryanDevVPC',
+        self.vpc = ec2.Vpc(self, id=f'{env_name}VPC',
                            cidr='172.32.0.0/16', # 65536 available addresses in vpc
                            max_azs=2, # max availability zones
                            enable_dns_hostnames=True, # enable public dns address, and gives EC2 ato-assign dns host names to instances

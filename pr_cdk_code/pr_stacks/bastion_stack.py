@@ -11,8 +11,9 @@ class BastionStack(core.Stack):
 
     def __init__(self, scope: core.Construct, id: str, vpc: ec2.Vpc, sg: ec2.SecurityGroup, **kwargs) -> None:
         super().__init__(scope, id, **kwargs)
+        env_name = self.node.try_get_context('env')
 
-        self.bastion_host = ec2.Instance(self, id='pryan-bastion-host',
+        self.bastion_host = ec2.Instance(self, id=f'{env_name}-bastion-host',
                                          instance_type=ec2.InstanceType(instance_type_identifier='t2.micro'),
                                          machine_image=ec2.AmazonLinuxImage(
                                              edition=ec2.AmazonLinuxEdition.STANDARD,

@@ -18,6 +18,10 @@ from pr_stacks.aws101a_stack import AWS101A
 
 
 app = core.App()
+
+env_name = app.node.try_get_context('env')
+
+
 # PrCdkCodeStack(app, "pr-cdk-code")
 vpc_stack = VPCStack(app, id='vpc-stack')
 security_stack = SecurityGroupStack(app, id='security-stack', vpc=vpc_stack.vpc)
@@ -34,7 +38,7 @@ apigw_stack = APIStack(app, id='apigw-stack')
 # cdk detected that I was referencing python 3.8 docker and downloaded
 #  Pulling from amazon/aws-sam-cli-build-image-python3.8
 lambda_stack = LambdaStack(app, id='lambda-stack', vpc=vpc_stack.vpc, lambdasg=security_stack.lambda_sg, lambdarole=security_stack.lambda_basic_role)
-lambda_stack.create_s3_trigger(source_bucket_name='pryan-cdk-rds-event-bucket', lambda_ref=lambda_stack.my_rds_lambda, events=[s3.EventType.OBJECT_CREATED], prefix='test_rds_', suffix='.csv')
+lambda_stack.create_s3_trigger(source_bucket_name=f'{env_name}-cdk-rds-event-bucket', lambda_ref=lambda_stack.my_rds_lambda, events=[s3.EventType.OBJECT_CREATED], prefix='test_rds_', suffix='.csv')
 
 
 cdn_stack = CDNStack(app, id='cdn-stack', s3Bucket=core.Fn.import_value('frontend-bucket'))

@@ -25,12 +25,14 @@ class LambdaStack(core.Stack):
         :param suffix:
         :return:
         """
+        env_name = self.node.try_get_context('env')
+
         if events is None:
             events = [s3.EventType.OBJECT_CREATED]
 
         # I would rather create this bucket in the S3 stack, but if it is going to be an event source
         # then I need the actual bucket... sucks..
-        source_bucket = s3.Bucket(self, id='pryan-lambda-event-bucket',
+        source_bucket = s3.Bucket(self, id=f'{env_name}-lambda-event-bucket',
                                   access_control=s3.BucketAccessControl.BUCKET_OWNER_FULL_CONTROL,
                                   encryption=s3.BucketEncryption.S3_MANAGED,
                                   bucket_name=source_bucket_name,

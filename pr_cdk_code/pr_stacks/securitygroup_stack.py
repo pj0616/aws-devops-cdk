@@ -15,9 +15,9 @@ class SecurityGroupStack(core.Stack):
         env_name = self.node.try_get_context('env')
 
         self.lambda_sg = ec2.SecurityGroup(self, id='lambdasg',
-                                      security_group_name='pryan-cdk-lambda-sg',
+                                      security_group_name=f'{env_name}-cdk-lambda-sg',
                                       vpc=vpc,
-                                      description='pryan SG for Lambda',
+                                      description=f'{env_name} SG for Lambda',
                                       allow_all_outbound=True
                                                             # all output bound traffic is allowed
                                                             # so lambda can reach out to any
@@ -25,15 +25,15 @@ class SecurityGroupStack(core.Stack):
                                            )
 
         self.bastion_sg = ec2.SecurityGroup(self, id='bastionsg',
-                                      security_group_name='pryan-cdk-bastion-sg',
+                                      security_group_name=f'{env_name}-cdk-bastion-sg',
                                       vpc=vpc,
-                                      description='pryan SG for Bastion',
+                                      description=f'{env_name} SG for Bastion',
                                       allow_all_outbound=True)
 
         self.redis_sg = ec2.SecurityGroup(self, id='redissg',
-                                      security_group_name='pryan-cdk-redis-sg',
+                                      security_group_name=f'{env_name}-cdk-redis-sg',
                                       vpc=vpc,
-                                      description='pryan SG for Redis Cluster',
+                                      description=f'{env_name} SG for Redis Cluster',
                                       allow_all_outbound=True
                                                             # all output bound traffic is allowed
                                                             # so lambda can reach out to any
@@ -55,7 +55,7 @@ class SecurityGroupStack(core.Stack):
         self.lambda_basic_role = iam.Role(self,
                                 id='lambdabasicrole',
                                 assumed_by=iam.ServicePrincipal(service='lambda.amazonaws.com'),
-                                role_name='pryan-cdk-lambda-role',
+                                role_name=f'{env_name}-cdk-lambda-role',
                                 managed_policies=[
                                     iam.ManagedPolicy.from_aws_managed_policy_name('service-role/AWSLambdaBasicExecutionRole')
                                     ]
@@ -77,13 +77,12 @@ class SecurityGroupStack(core.Stack):
                             parameter_name=f'/{env_name}/lambda-sg',
                             string_value=self.lambda_sg.security_group_id)
 
-        ssm.StringParameter(self, id='pryan-lambdarole-arn-param',
+        ssm.StringParameter(self, id=f'{env_name}-lambdarole-arn-param',
                             parameter_name=f"/{env_name}/lambda-role-arn",
                             string_value=self.lambda_basic_role.role_arn
                             )
-        ssm.StringParameter(self, id='pryan-lambdarole-name-param',
+        ssm.StringParameter(self, id=f'{env_name}-lambdarole-name-param',
                             parameter_name=f"/{env_name}/lambda-role-name",
                             string_value=self.lambda_basic_role.role_name
                             )
-        # iam_stack = IAMStack(scope, 'pryan-iam-stack')
 

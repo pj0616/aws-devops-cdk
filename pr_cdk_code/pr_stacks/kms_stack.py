@@ -12,7 +12,7 @@ class KMSStack(core.Stack):
         prj_name = self.node.try_get_context('project_name')
         env_name = self.node.try_get_context('env')
 
-        self.kms_rds = kms.Key(self, id='pryan-rdskey',
+        self.kms_rds = kms.Key(self, id=f'{env_name}-rdskey',
                                description=f"{prj_name}-key-rds",
                                enable_key_rotation=True
                                )
@@ -22,7 +22,7 @@ class KMSStack(core.Stack):
         )
 
         # create ssm parameter for key
-        ssm.StringParameter(self, id='pryan-rdskey-param',
+        ssm.StringParameter(self, id=f'{env_name}-rdskey-param',
                             string_value=self.kms_rds.key_id,
-                            parameter_name=f'/{env_name}/pryan-rds-kms-key'
+                            parameter_name=f'/{env_name}/rds-kms-key'
                             )
