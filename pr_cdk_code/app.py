@@ -15,7 +15,7 @@ from pr_stacks.lambda_stack import LambdaStack
 from pr_stacks.cdn_stack import CDNStack
 from pr_stacks.codepipeline_frontend import CodePipelineFrontendStack
 from pr_stacks.aws101a_stack import AWS101A
-
+from pr_stacks.api_sqs_lambda_stack import ApiSqsLambdaStack
 
 app = core.App()
 
@@ -44,8 +44,8 @@ lambda_stack.create_s3_trigger(source_bucket_name=f'{env_name}-cdk-rds-event-buc
 cdn_stack = CDNStack(app, id='cdn-stack', s3Bucket=core.Fn.import_value('frontend-bucket'))
 cp_frontend_stack = CodePipelineFrontendStack(app, id='cp-fe-stack', webhostingbucket=core.Fn.import_value('frontend-bucket'))
 
-aws_101a_stack = AWS101A(app, id='aws101a-stack')
-
+aws_101a_stack = AWS101A(app, id=f'{env_name}-aws101a-stack')
+api_sqs_stack = ApiSqsLambdaStack(app, id=f'{env_name}-apisqs-stack')
 
 # synth will synthesis the cloudformation template
 app.synth()
