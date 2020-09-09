@@ -1,7 +1,6 @@
 from aws_cdk import (
     aws_lambda as lb,
     aws_apigateway as apigw,
-    aws_iam as iam,
     aws_dynamodb as ddb,
     core,
 )
