@@ -16,7 +16,7 @@ from pr_stacks.cdn_stack import CDNStack
 from pr_stacks.codepipeline_frontend import CodePipelineFrontendStack
 from pr_stacks.aws101a_stack import AWS101A
 from pr_stacks.api_sqs_lambda_stack import ApiSqsLambdaStack
-
+from pr_stacks.app_load_balancer import LoadBalancerStack
 app = core.App()
 
 env_name = app.node.try_get_context('env')
@@ -46,6 +46,9 @@ cp_frontend_stack = CodePipelineFrontendStack(app, id='cp-fe-stack', webhostingb
 
 aws_101a_stack = AWS101A(app, id=f'{env_name}-aws101a-stack')
 api_sqs_stack = ApiSqsLambdaStack(app, id=f'{env_name}-apisqs-stack')
+
+load_balancer_stack = LoadBalancerStack(app, id='lb-stack')
+
 
 # synth will synthesis the cloudformation template
 app.synth()
