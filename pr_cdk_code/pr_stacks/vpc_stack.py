@@ -16,7 +16,7 @@ class VPCStack(core.Stack):
         self.vpc = ec2.Vpc(self, id=f'{env_name}VPC',
                            cidr='172.32.0.0/16', # 65536 available addresses in vpc
                            max_azs=2, # max availability zones
-                           enable_dns_hostnames=True, # enable public dns address, and gives EC2 ato-assign dns host names to instances
+                           enable_dns_hostnames=True, # enable public dns address, and gives EC2 auto-assign dns host names to instances
                            enable_dns_support=True, # 0.2 dns server is used, use Amazon DNS server
                            subnet_configuration=[
                                ec2.SubnetConfiguration(
